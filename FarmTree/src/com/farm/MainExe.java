@@ -7,7 +7,6 @@ public class MainExe {
 	TreeDao treeDao = new TreeDao();
 	UserDao userDao = new UserDao();
 	BoardDao boardDao = new BoardDao();
-	
 
 	public static void main(String[] args) {
 		Scanner scn = new Scanner(System.in);

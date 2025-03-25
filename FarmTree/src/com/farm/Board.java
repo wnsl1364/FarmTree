@@ -8,6 +8,7 @@ public class Board {
 	private String author;
 	private String post_date;
 	
+	
 
 	// 생성자
 	public Board() {

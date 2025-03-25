@@ -15,6 +15,7 @@ public class BoardDao {
 		this.conn = DBConnect.getConnect();
 	}
 	
+	
 
 	// 게시판 목록 조회
 	public List<Board> list() {
