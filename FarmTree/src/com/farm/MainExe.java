@@ -41,14 +41,46 @@ public class MainExe {
 				switch (menu) {
 				case 1: // 나무 목록 보기
 					isMainMenu = false; // 메뉴 표시 안 함
+					int pageSize = 5;
+					int currentPage = 1;
+
 					while (true) {
 						List<Tree> trees = treeDao.list();
+
+						int totalPosts = trees.size();
+						int totalPages = (int) Math.ceil((double) totalPosts / pageSize);
+						int start = (currentPage - 1) * pageSize;
+						int end = Math.min(start + pageSize, totalPosts);
+
 						System.out.println("-----------------------------------------------------");
-						for (int i = 0; i < trees.size(); i++) {
+						for (int i = start; i < end; i++) {
 							System.out.println("[" + (i + 1) + "] " + trees.get(i).getTree_name());
 						}
 						System.out.println("-----------------------------------------------------");
-						System.out.print("나무를 선택해주세요>> ");
+						System.out.println("페이지 " + currentPage + "/" + totalPages);
+						System.out.println("-----------------------------------------------------");
+						System.out.print("상세보기>> (게시판 번호) | 이전페이지>> (P) | 다음페이지>> (N)  | 메뉴로 돌아가기>> (M)");
+
+						String input = scn.nextLine().trim().toUpperCase();
+						if (input.equals("P")) {
+							if (currentPage > 1)
+								currentPage--;
+							else
+								System.out.println("-----------------------------------------------------");
+								System.out.println("이전 페이지가 없습니다.");
+							continue;
+						} else if (input.equals("N")) {
+							if (currentPage < totalPages)
+								currentPage++;
+							else
+								System.out.println("-----------------------------------------------------");
+								System.out.println("다음 페이지가 없습니다.");
+							continue;
+						} else if (input.equals("M")) {
+							isMainMenu = true;
+							break;
+						}
+
 						int select;
 						try {
 							select = Integer.parseInt(scn.nextLine());
@@ -127,23 +159,48 @@ public class MainExe {
 
 								switch (boardMenu) {
 								case 1:// 게시판 목록
+
+									pageSize = 5;
+									currentPage = 1;
+
 									while (true) {
 										List<Board> boards = boardDao.list();
+										int totalPosts = boards.size();
+										int totalPages = (int) Math.ceil((double) totalPosts / pageSize); // 올림해서 정수로
+
+										int start = (currentPage - 1) * pageSize; // 현재 페이지에서 보여줄 게시글의 시작 인덱스 번호
+										int end = Math.min(start + pageSize, totalPosts);// 현재페이지에서 보여줄 게시글의 마지막 인덱스 번호
 
 										// 목록 출력
 										System.out.println("-----------------------------------------------------");
 										System.out.println("번호   |   제목   |   작성자   |   등록일");
 										System.out.println("-----------------------------------------------------");
-										for (Board board : boards) {
-											System.out.println(board.getPost_id() + "   |   " + board.getTitle() + "   |   "
-													+ board.getAuthor() + "   |   " + board.getPost_date());
+										for (int i = start; i < end; i++) {
+											Board board = boards.get(i);
+											System.out.println(board.getPost_id() + "   |   " + board.getTitle()
+													+ "   |   " + board.getAuthor() + "   |   " + board.getPost_date());
 										}
 										System.out.println("-----------------------------------------------------");
 
-										System.out.println("상세보기>> (게시판 번호) | 게시판 메뉴로>> (Y)");
+										System.out
+												.println("상세보기>> (게시판 번호) | 이전페이지>> (P) | 다음페이지>> (N) | 게시판 메뉴로>> (B)");
 										String choice = scn.nextLine().trim().toUpperCase();
 
-										if (choice.equals("Y")) {
+										if (choice.equals("P")) {
+											if (currentPage > 1) {
+												currentPage--;
+											} else {
+												System.out.println("-----------------------------------------------------");
+												System.out.println("이전 페이지가 없습니다.");
+											}
+										} else if (choice.equals("N")) {
+											if (currentPage < totalPages) {
+												currentPage++;
+											} else {
+												System.out.println("-----------------------------------------------------");
+												System.out.println("다음 페이지가 없습니다.");
+											}
+										} else if (choice.equals("B")) {
 											break;
 										} else {
 											try {
@@ -204,7 +261,6 @@ public class MainExe {
 									} else {
 										System.out.println("등록이 예외처리되었습니다.");
 									}
-									isMainMenu = true;
 									break;
 								case 3: // 게시글 수정
 									System.out.println("수정할 게시물의 번호를 입력해주세요>> ");
