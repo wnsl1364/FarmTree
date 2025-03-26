@@ -26,6 +26,8 @@ public class MainExe {
 				System.out.println("[3] 나무 등록하기");
 				System.out.println("[4] 나무 수정하기");
 				System.out.println("[5] 나무 삭제하기");
+				System.out.println("[6] 회원가입");
+				System.out.println("[7] 로그인");
 				System.out.println("[9] 종료");
 				System.out.println("-----------------------------------------------------");
 				System.out.print("메뉴를 선택해주세요>> ");
@@ -67,14 +69,14 @@ public class MainExe {
 								currentPage--;
 							else
 								System.out.println("-----------------------------------------------------");
-								System.out.println("이전 페이지가 없습니다.");
+							System.out.println("이전 페이지가 없습니다.");
 							continue;
 						} else if (input.equals("N")) {
 							if (currentPage < totalPages)
 								currentPage++;
 							else
 								System.out.println("-----------------------------------------------------");
-								System.out.println("다음 페이지가 없습니다.");
+							System.out.println("다음 페이지가 없습니다.");
 							continue;
 						} else if (input.equals("M")) {
 							isMainMenu = true;
@@ -129,262 +131,301 @@ public class MainExe {
 				case 2: // 게시판
 					isMainMenu = false;
 					while (true) {
-						System.out.println("-----------------------------------------------------");
-						System.out.println("아이디를 입력해주세요>> ");
-						String user_id = scn.nextLine();
-						System.out.println("비밀번호를 입력해주세요>> ");
-						String user_pw = scn.nextLine();
-						System.out.println("-----------------------------------------------------");
+						while (true) {
+							System.out.println("-----------------------------------------------------");
+							System.out.println("[1] 게시판 목록        ");
+							System.out.println("[2] 게시글 등록");
+							System.out.println("[3] 게시글 수정");
+							System.out.println("[4] 게시글 삭제");
+							System.out.println("[9] 메뉴로 돌아가기");
+							System.out.println("-----------------------------------------------------");
+							System.out.print("메뉴를 선택해주세요>> ");
 
-						if (userDao.login(user_id, user_pw)) {
-							System.out.println(user_id + "님 환영합니다.");
+							int boardMenu;
+							try {
+								boardMenu = Integer.parseInt(scn.nextLine());
+							} catch (NumberFormatException e) {
+								System.out.println("숫자를 입력해주세요.");
+								continue;
+							}
 
-							while (true) {
-								System.out.println("-----------------------------------------------------");
-								System.out.println("[1] 게시판 목록        ");
-								System.out.println("[2] 게시글 등록");
-								System.out.println("[3] 게시글 수정");
-								System.out.println("[4] 게시글 삭제");
-								System.out.println("[9] 메뉴로 돌아가기");
-								System.out.println("-----------------------------------------------------");
-								System.out.print("메뉴를 선택해주세요>> ");
+							switch (boardMenu) {
+							case 1:// 게시판 목록
 
-								int boardMenu;
-								try {
-									boardMenu = Integer.parseInt(scn.nextLine());
-								} catch (NumberFormatException e) {
-									System.out.println("숫자를 입력해주세요.");
-									continue;
-								}
+								pageSize = 5;
+								currentPage = 1;
 
-								switch (boardMenu) {
-								case 1:// 게시판 목록
+								while (true) {
+									List<Board> boards = boardDao.list();
+									int totalPosts = boards.size();
+									int totalPages = (int) Math.ceil((double) totalPosts / pageSize); // 올림해서 정수로
 
-									pageSize = 5;
-									currentPage = 1;
+									int start = (currentPage - 1) * pageSize; // 현재 페이지에서 보여줄 게시글의 시작 인덱스 번호
+									int end = Math.min(start + pageSize, totalPosts);// 현재페이지에서 보여줄 게시글의 마지막 인덱스 번호
 
-									while (true) {
-										List<Board> boards = boardDao.list();
-										int totalPosts = boards.size();
-										int totalPages = (int) Math.ceil((double) totalPosts / pageSize); // 올림해서 정수로
+									// 목록 출력
+									System.out.println("-----------------------------------------------------");
+									System.out.println("번호   |   제목   |   작성자   |   등록일   |   조회수");
+									System.out.println("-----------------------------------------------------");
+									for (int i = start; i < end; i++) {
+										Board board = boards.get(i);
+										System.out.println(board.getPost_id() + "   |   " + board.getTitle() + "   |   "
+												+ board.getAuthor() + "   |   " + board.getPost_date() + "   |   "
+												+ board.getView_count());
+									}
+									System.out.println("-----------------------------------------------------");
 
-										int start = (currentPage - 1) * pageSize; // 현재 페이지에서 보여줄 게시글의 시작 인덱스 번호
-										int end = Math.min(start + pageSize, totalPosts);// 현재페이지에서 보여줄 게시글의 마지막 인덱스 번호
+									System.out.println("상세보기>> (게시판 번호) | 이전페이지>> (P) | 다음페이지>> (N) | 게시판 메뉴로>> (B)");
+									String choice = scn.nextLine().trim().toUpperCase();
 
-										// 목록 출력
-										System.out.println("-----------------------------------------------------");
-										System.out.println("번호   |   제목   |   작성자   |   등록일");
-										System.out.println("-----------------------------------------------------");
-										for (int i = start; i < end; i++) {
-											Board board = boards.get(i);
-											System.out.println(board.getPost_id() + "   |   " + board.getTitle()
-													+ "   |   " + board.getAuthor() + "   |   " + board.getPost_date());
-										}
-										System.out.println("-----------------------------------------------------");
-
-										System.out
-												.println("상세보기>> (게시판 번호) | 이전페이지>> (P) | 다음페이지>> (N) | 게시판 메뉴로>> (B)");
-										String choice = scn.nextLine().trim().toUpperCase();
-
-										if (choice.equals("P")) {
-											if (currentPage > 1) {
-												currentPage--;
-											} else {
-												System.out.println("-----------------------------------------------------");
-												System.out.println("이전 페이지가 없습니다.");
-											}
-										} else if (choice.equals("N")) {
-											if (currentPage < totalPages) {
-												currentPage++;
-											} else {
-												System.out.println("-----------------------------------------------------");
-												System.out.println("다음 페이지가 없습니다.");
-											}
-										} else if (choice.equals("B")) {
-											break;
+									if (choice.equals("P")) {
+										if (currentPage > 1) {
+											currentPage--;
 										} else {
-											try {
-												int postId = Integer.parseInt(choice);
-												Board selected = boardDao.getBoardById(postId);
-												if (selected != null) {
-													System.out.println(
-															"=====================================================");
-													System.out.println("번호: " + selected.getPost_id());
-													System.out.println("제목: " + selected.getTitle());
-													System.out.println("등록일: " + selected.getPost_date());
-													System.out.println("작성자: " + selected.getAuthor());
-													System.out.println("내용: " + selected.getContent());
-													System.out.println(
-															"-----------------------------------------------------");
-
-													while (true) {
-														System.out.println("목록으로>> (Y) | 메뉴로 돌아가기>> (M)");
-														choice = scn.nextLine().trim().toUpperCase();
-
-														if (choice.equals("Y")) {
-															break;
-														} else if (choice.equals("M")) {
-															isMainMenu = true;
-															break;
-														} else {
-															System.out.println("잘못된 입력입니다. 다시 선택해주세요.");
-														}
-													}
-													if (isMainMenu)
-														break;
-												} else {
-													System.out.println("해당 게시물을 찾을 수 없습니다.");
-												}
-											} catch (NumberFormatException e) {
-												System.out.println("숫자를 입력해주세요.");
-											}
+											System.out.println("-----------------------------------------------------");
+											System.out.println("이전 페이지가 없습니다.");
 										}
-										if (isMainMenu)
-											break;
-									}
-									break;
-								case 2: // 게시글 등록
-									System.out.println("게시물 제목을 입력해주세요>> ");
-									String title = scn.nextLine();
-									System.out.println("게시물 내용을 입력해주세요>> ");
-									String content = scn.nextLine();
-									System.out.println("작성자를 입력해주세요>> ");
-									String author = scn.nextLine();
-
-									Board board = new Board();
-									board.setTitle(title);
-									board.setContent(content);
-									board.setAuthor(author);
-
-									if (boardDao.add(board)) {
-										System.out.println("등록이 완료되었습니다.");
+									} else if (choice.equals("N")) {
+										if (currentPage < totalPages) {
+											currentPage++;
+										} else {
+											System.out.println("-----------------------------------------------------");
+											System.out.println("다음 페이지가 없습니다.");
+										}
+									} else if (choice.equals("B")) {
+										break;
 									} else {
-										System.out.println("등록이 예외처리되었습니다.");
-									}
-									break;
-								case 3: // 게시글 수정
-									System.out.println("수정할 게시물의 번호를 입력해주세요>> ");
-									int num = Integer.parseInt(scn.nextLine());
-									System.out.println("수정할 게시물 제목을 입력해주세요>> ");
-									title = scn.nextLine();
-									System.out.println("수정할 게시물 내용을 입력해주세요>> ");
-									content = scn.nextLine();
-									System.out.println("수정할 작성자를 입력해주세요>> ");
-									author = scn.nextLine();
-
-									board = new Board();
-									board.setPost_id(num);
-									board.setTitle(title);
-									board.setContent(content);
-									board.setAuthor(author);
-
-									if (boardDao.edit(board)) {
-										System.out.println("수정이 완료되었습니다.");
-									} else {
-										System.out.println("수정이 예외처리되었습니다.");
-									}
-									isMainMenu = true;
-									break;
-								case 4: // 게시글 삭제
-									int boardId = 0;
-									while (true) {
-										System.out.println("삭제할 게시물의 번호를 입력해주세요>> ");
-										String input = scn.nextLine();
-
 										try {
-											boardId = Integer.parseInt(input);
-											if (boardId > 0) {
-												break;
+											int postId = Integer.parseInt(choice);
+											boardDao.viewCount(postId);
+											Board selected = boardDao.getBoardById(postId);
+											if (selected != null) {
+												System.out.println(
+														"=====================================================");
+												System.out.println("번호: " + selected.getPost_id());
+												System.out.println("조회수: " + selected.getView_count());
+												System.out.println("제목: " + selected.getTitle());
+												System.out.println("등록일: " + selected.getPost_date());
+												System.out.println("작성자: " + selected.getAuthor());
+												System.out.println("내용: " + selected.getContent());
+												System.out.println(
+														"-----------------------------------------------------");
+
+												while (true) {
+													System.out.println("목록으로>> (Y) | 메뉴로 돌아가기>> (M)");
+													choice = scn.nextLine().trim().toUpperCase();
+
+													if (choice.equals("Y")) {
+														break;
+													} else if (choice.equals("M")) {
+														isMainMenu = true;
+														break;
+													} else {
+														System.out.println("잘못된 입력입니다. 다시 선택해주세요.");
+													}
+												}
+												if (isMainMenu)
+													break;
 											} else {
-												System.out.println("삭제할 게시물의 번호는 1이상의 숫자를 입력해주세요.");
+												System.out.println("해당 게시물을 찾을 수 없습니다.");
 											}
 										} catch (NumberFormatException e) {
 											System.out.println("숫자를 입력해주세요.");
 										}
 									}
-
-									if (boardDao.delete(boardId)) {
-										System.out.println("삭제가 완료되었습니다.");
-									} else {
-										System.out.println("삭제가 예외처리되었습니다.");
-									}
-									break;
-								case 9: // 종료
-									isMainMenu = true;
-									break;
-								default:
-									System.out.println("잘못된 입력입니다. 메뉴를 다시 선택해주세요.");
+									if (isMainMenu)
+										break;
 								}
-								if (isMainMenu)
-									break;
+								break;
+							case 2: // 게시글 등록
+								System.out.println("게시물 제목을 입력해주세요>> ");
+								String title = scn.nextLine();
+								System.out.println("게시물 내용을 입력해주세요>> ");
+								String content = scn.nextLine();
+								System.out.println("작성자를 입력해주세요>> ");
+								String author = scn.nextLine();
+
+								Board board = new Board();
+								board.setTitle(title);
+								board.setContent(content);
+								board.setAuthor(author);
+
+								if (boardDao.add(board)) {
+									System.out.println("등록이 완료되었습니다.");
+								} else {
+									System.out.println("등록이 예외처리되었습니다.");
+								}
+								break;
+							case 3: // 게시글 수정
+								System.out.println("수정할 게시물의 번호를 입력해주세요>> ");
+								int num = Integer.parseInt(scn.nextLine());
+								System.out.println("수정할 게시물 제목을 입력해주세요>> ");
+								title = scn.nextLine();
+								System.out.println("수정할 게시물 내용을 입력해주세요>> ");
+								content = scn.nextLine();
+								System.out.println("수정할 작성자를 입력해주세요>> ");
+								author = scn.nextLine();
+
+								board = new Board();
+								board.setPost_id(num);
+								board.setTitle(title);
+								board.setContent(content);
+								board.setAuthor(author);
+
+								if (boardDao.edit(board)) {
+									System.out.println("수정이 완료되었습니다.");
+								} else {
+									System.out.println("수정이 예외처리되었습니다.");
+								}
+								isMainMenu = true;
+								break;
+							case 4: // 게시글 삭제
+								int boardId = 0;
+								while (true) {
+									System.out.println("삭제할 게시물의 번호를 입력해주세요>> ");
+									String input = scn.nextLine();
+
+									try {
+										boardId = Integer.parseInt(input);
+										if (boardId > 0) {
+											break;
+										} else {
+											System.out.println("삭제할 게시물의 번호는 1이상의 숫자를 입력해주세요.");
+										}
+									} catch (NumberFormatException e) {
+										System.out.println("숫자를 입력해주세요.");
+									}
+								}
+
+								if (boardDao.delete(boardId)) {
+									System.out.println("삭제가 완료되었습니다.");
+								} else {
+									System.out.println("삭제가 예외처리되었습니다.");
+								}
+								break;
+							case 9: // 종료
+								isMainMenu = true;
+								break;
+							default:
+								System.out.println("잘못된 입력입니다. 메뉴를 다시 선택해주세요.");
 							}
-							break;
-						} else {
-							System.out.println("로그인에 실패했습니다. 아이디, 비밀번호를 다시 입력해주세요.");
-							System.out.println("-----------------------------------------------------");
+							if (isMainMenu)
+								break;
 						}
+						break;
 					}
 					break;
 				case 3: // 나무 등록
-					System.out.println("나무의 id를 입력해주세요>> ");
-					int id = Integer.parseInt(scn.nextLine());
-					System.out.println("나무 명을 입력해주세요>> ");
-					String name = scn.nextLine();
-					System.out.println("나무 가격을 입력해주세요>> ");
-					int price = Integer.parseInt(scn.nextLine());
-					System.out.println("나무에 대한 설명을 입력해주세요>> ");
-					String description = scn.nextLine();
+					while (true) {
+						System.out.println("-----------------------------------------------------");
+						System.out.println("나무등록은 관리자만 가능합니다.>> ");
 
-					Tree treeR = new Tree(id, name, price, description);
-					if (treeDao.add(treeR)) {
-						System.out.println("등록이 완료되었습니다.");
-					} else {
-						System.out.println("등록이 예외처리되었습니다.");
+						System.out.println("나무의 id를 입력해주세요>> ");
+						int id = Integer.parseInt(scn.nextLine());
+						System.out.println("나무 명을 입력해주세요>> ");
+						String name = scn.nextLine();
+						System.out.println("나무 가격을 입력해주세요>> ");
+						int price = Integer.parseInt(scn.nextLine());
+						System.out.println("나무에 대한 설명을 입력해주세요>> ");
+						String description = scn.nextLine();
+
+						Tree treeR = new Tree(id, name, price, description);
+						if (treeDao.add(treeR)) {
+							System.out.println("등록이 완료되었습니다.");
+						} else {
+							System.out.println("등록이 예외처리되었습니다.");
+						}
+						break;
 					}
 					break;
 				case 4: // 나무 수정
-					System.out.println("수정할 나무의 id를 입력해주세요>> ");
-					id = Integer.parseInt(scn.nextLine());
-					System.out.println("나무 명을 입력해주세요>> ");
-					name = scn.nextLine();
-					System.out.println("나무 가격을 입력해주세요>> ");
-					price = Integer.parseInt(scn.nextLine());
-					System.out.println("나무에 대한 설명을 입력해주세요>> ");
-					description = scn.nextLine();
+					while (true) {
+						System.out.println("-----------------------------------------------------");
+						System.out.println("나무 수정은 관리자만 가능합니다.>> ");
 
-					Tree treeE = new Tree();
-					treeE.setTree_id(id);
-					treeE.setTree_name(name);
-					treeE.setPrice(price);
-					treeE.setDescription(description);
-					if (treeDao.edit(treeE)) {
-						System.out.println("수정이 완료되었습니다.");
-					} else {
-						System.out.println("수정이 예외처리되었습니다.");
+						System.out.println("수정할 나무의 id를 입력해주세요>> ");
+						int id = Integer.parseInt(scn.nextLine());
+						System.out.println("나무 명을 입력해주세요>> ");
+						String name = scn.nextLine();
+						System.out.println("나무 가격을 입력해주세요>> ");
+						int price = Integer.parseInt(scn.nextLine());
+						System.out.println("나무에 대한 설명을 입력해주세요>> ");
+						String description = scn.nextLine();
+
+						Tree treeE = new Tree();
+						treeE.setTree_id(id);
+						treeE.setTree_name(name);
+						treeE.setPrice(price);
+						treeE.setDescription(description);
+
+						if (treeDao.edit(treeE)) {
+							System.out.println("수정이 완료되었습니다.");
+						} else {
+							System.out.println("수정이 예외처리되었습니다.");
+						}
+						break;
 					}
 					break;
 				case 5: // 나무 삭제
-					id = 0;
 					while (true) {
-						System.out.println("삭제할 나무의 id를 입력해주세요>> ");
-						String input = scn.nextLine();
+						System.out.println("-----------------------------------------------------");
+						System.out.println("나무 삭제는 관리자만 가능합니다.>> ");
+						int id = 0;
+						while (true) {
+							System.out.println("삭제할 나무의 id를 입력해주세요>> ");
+							String input = scn.nextLine();
 
-						try {
-							id = Integer.parseInt(input);
-							if (id > 0) {
-								break;
-							} else {
-								System.out.println("삭제할 나무의 id는 1이상의 숫자를 입력해주세요.");
+							try {
+								id = Integer.parseInt(input);
+								if (id > 0) {
+									break;
+								} else {
+									System.out.println("1 이상의 숫자를 입력해주세요.");
+								}
+							} catch (NumberFormatException e) {
+								System.out.println("숫자를 입력해주세요.");
 							}
-						} catch (NumberFormatException e) {
-							System.out.println("숫자를 입력해주세요.");
 						}
-					}
 
-					if (treeDao.delete(id)) {
-						System.out.println("삭제가 완료되었습니다.");
+						if (treeDao.delete(id)) {
+							System.out.println("삭제가 완료되었습니다.");
+						} else {
+							System.out.println("삭제가 예외처리되었습니다.");
+						}
+						break;
+					}
+					break;
+				case 6: // 회원가입
+					System.out.println("아이디를 입력해주세요>> ");
+					String userId = scn.nextLine();
+					System.out.println("이름을 입력해주세요>> ");
+					String userName = scn.nextLine();
+					System.out.println("비밀번호를 입력해주세요>> ");
+					String userPw = scn.nextLine();
+
+					if (userDao.register(userId, userName, userPw)) {
+						System.out.println("회원가입이 완료되었습니다.");
 					} else {
-						System.out.println("삭제가 예외처리되었습니다.");
+						System.out.println("회원가입에 실패했습니다. 아이디 중복 여부를 확인해주세요.");
+					}
+					break;
+				case 7:
+					System.out.println("아이디를 입력해주세요>> ");
+					String user_id = scn.nextLine();
+					System.out.println("비밀번호를 입력해주세요>> ");
+					String user_pw = scn.nextLine();
+					System.out.println("-----------------------------------------------------");
+
+					if (userDao.login(user_id, user_pw)) {
+						if (user_id.equals("admin") && user_pw.equals("1234")) {
+							System.out.println(user_id + "(관리자)님 환영합니다.");
+						} else {
+							System.out.println(user_id + "님 환영합니다.");
+							break;
+						}
+					} else {
+						System.out.println("로그인에 실패했습니다. 아이디, 비밀번호를 다시 입력해주세요.");
+						System.out.println("-----------------------------------------------------");
 					}
 					break;
 				case 9: // 종료

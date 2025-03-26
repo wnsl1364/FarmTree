@@ -29,4 +29,21 @@ public class UserDao {
 		}
 		return false;
 	}
+	
+	public boolean register(String user_id, String user_name, String password) {
+		String sql = "INSERT INTO Users(user_id, user_name, password) values (?,?,?)";
+		
+		try(PreparedStatement pstmt = conn.prepareStatement(sql);) {
+			pstmt.setString(1, user_id);
+	        pstmt.setString(2, user_name);
+	        pstmt.setString(3, password);
+	        
+	        int r = pstmt.executeUpdate();
+			return r > 0;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return false;
+	}
 }

@@ -14,8 +14,6 @@ public class BoardDao {
 	public BoardDao() {
 		this.conn = DBConnect.getConnect();
 	}
-	
-	
 
 	// 게시판 목록 조회
 	public List<Board> list() {
@@ -31,6 +29,7 @@ public class BoardDao {
 				board.setPost_date(sdf.format(rs.getDate("post_date"))); // 날짜 포맷 변경
 				board.setPost_id(rs.getInt("post_id"));
 				board.setTitle(rs.getString("title"));
+				board.setView_count(rs.getInt("view_count"));
 				list.add(board);
 			}
 		} catch (SQLException e) {
@@ -57,6 +56,7 @@ public class BoardDao {
 					board.setPost_date(sdf.format(rs.getDate("post_date"))); // 날짜 포맷 변경
 					board.setPost_id(rs.getInt("post_id"));
 					board.setTitle(rs.getString("title"));
+					board.setView_count(rs.getInt("view_count"));
 				}
 			}
 
@@ -117,6 +117,21 @@ public class BoardDao {
 			int r = pstmt.executeUpdate();
 			return r > 0;
 
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return false;
+	}
+
+	// 조회수 증가
+	public boolean viewCount(int postId) {
+		String sql = "UPDATE Board SET view_count = view_count+1 WHERE post_id = ?";
+		try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+			pstmt.setInt(1, postId);
+
+			int r = pstmt.executeUpdate();
+			return r > 0;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

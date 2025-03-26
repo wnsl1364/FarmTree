@@ -7,6 +7,7 @@ public class Board {
 	private String content;
 	private String author;
 	private String post_date;
+	private int view_count;
 	
 	
 
@@ -14,12 +15,13 @@ public class Board {
 	public Board() {
 	}
 
-	public Board(int post_id, String title, String content, String author, String post_date) {
+	public Board(int post_id, String title, String content, String author, String post_date, int view_count) {
 		this.post_id = post_id;
 		this.title = title;
 		this.content = content;
 		this.author = author;
 		this.post_date = post_date;
+		this.view_count = view_count;
 	}
 
 	// getter setter
@@ -62,10 +64,18 @@ public class Board {
 	public void setPost_date(String post_date) {
 		this.post_date = post_date;
 	}
+	
+	public int getView_count() {
+		return view_count;
+	}
+
+	public void setView_count(int view_count) {
+		this.view_count = view_count;
+	}
 
 	// toString
 	@Override
 	public String toString() {
-		return "Board [ID=" + post_id + ", 제목=" + title + ", 작성자=" + author + ", 등록일=" + post_date + "]";
+		return "Board [ID=" + post_id + ", 제목=" + title + ", 작성자=" + author + ", 등록일=" + post_date + ", 조회수=" + view_count + "]";
 	}
 }
