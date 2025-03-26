@@ -59,7 +59,7 @@ public class MainExe {
 						System.out.println("-----------------------------------------------------");
 						System.out.println("페이지 " + currentPage + "/" + totalPages);
 						System.out.println("-----------------------------------------------------");
-						System.out.print("상세보기>> (게시판 번호) | 이전페이지>> (P) | 다음페이지>> (N)  | 메뉴로 돌아가기>> (M)");
+						System.out.println("상세보기>> (게시판 번호) | 이전페이지>> (P) | 다음페이지>> (N)  | 메뉴로 돌아가기>> (M)");
 
 						String input = scn.nextLine().trim().toUpperCase();
 						if (input.equals("P")) {
@@ -83,7 +83,7 @@ public class MainExe {
 
 						int select;
 						try {
-							select = Integer.parseInt(scn.nextLine());
+							select = Integer.parseInt(input);
 							if (select < 1 || select > trees.size()) {
 								System.out.println("올바른 번호를 입력해주세요");
 								continue;
