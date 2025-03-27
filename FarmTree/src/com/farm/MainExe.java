@@ -15,6 +15,7 @@ public class MainExe {
 		UserDao userDao = new UserDao();
 		BoardDao boardDao = new BoardDao();
 		String loggedInUserId = null; // 로그인한 사용자의 아이디 저장
+		
 
 		System.out.println("=====================================================");
 		System.out.println("주연농원");
