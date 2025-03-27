@@ -13,6 +13,13 @@ public class Tree {
 	public Tree() {
 	}
 
+	public Tree(String tree_name, int price, String description) {
+		this.tree_name = tree_name;
+		this.price = price;
+		this.description = description;
+		this.write_date = null;
+	}
+	
 	public Tree(int tree_id, String tree_name, int price, String description) {
 		this.tree_id = tree_id;
 		this.tree_name = tree_name;

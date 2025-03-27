@@ -18,13 +18,12 @@ public class TreeDao {
 	// 나무 등록
 	public boolean add(Tree tree) {
 		String sql = "insert into Trees(tree_id, tree_name, price, description, write_date) "
-				+ "values (?, ?, ?, ?, SYSDATE)";
+				+ "values (tree_seq.NEXTVAL, ?, ?, ?, SYSDATE)";
 
 		try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-			pstmt.setInt(1, tree.getTree_id());
-			pstmt.setString(2, tree.getTree_name());
-			pstmt.setInt(3, tree.getPrice());
-			pstmt.setString(4, tree.getDescription());
+			pstmt.setString(1, tree.getTree_name());
+			pstmt.setInt(2, tree.getPrice());
+			pstmt.setString(3, tree.getDescription());
 
 			int r = pstmt.executeUpdate();
 			return r > 0;
@@ -69,7 +68,7 @@ public class TreeDao {
 
 	// 나무 목록조회
 	public List<Tree> list() {
-		String sql = "select * from Trees";
+		String sql = "select * from Trees ORDER BY tree_id DESC";
 		List<Tree> list = new ArrayList<>();
 
 		try (PreparedStatement pstmt = conn.prepareStatement(sql);

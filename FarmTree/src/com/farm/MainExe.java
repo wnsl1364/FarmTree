@@ -14,6 +14,7 @@ public class MainExe {
 		TreeDao treeDao = new TreeDao();
 		UserDao userDao = new UserDao();
 		BoardDao boardDao = new BoardDao();
+		String loggedInUserId = null; // 로그인한 사용자의 아이디 저장
 
 		System.out.println("=====================================================");
 		System.out.println("주연농원");
@@ -51,12 +52,18 @@ public class MainExe {
 
 						int totalPosts = trees.size();
 						int totalPages = (int) Math.ceil((double) totalPosts / pageSize);
+
+						if (currentPage > totalPages)
+							currentPage = totalPages;
+						if (currentPage < 1)
+							currentPage = 1;
+
 						int start = (currentPage - 1) * pageSize;
 						int end = Math.min(start + pageSize, totalPosts);
 
 						System.out.println("-----------------------------------------------------");
 						for (int i = start; i < end; i++) {
-							System.out.println("[" + (i + 1) + "] " + trees.get(i).getTree_name());
+							System.out.println("[" + trees.get(i).getTree_id() + "] " + trees.get(i).getTree_name());
 						}
 						System.out.println("-----------------------------------------------------");
 						System.out.println("페이지 " + currentPage + "/" + totalPages);
@@ -64,19 +71,22 @@ public class MainExe {
 						System.out.println("상세보기>> (게시판 번호) | 이전페이지>> (P) | 다음페이지>> (N)  | 메뉴로 돌아가기>> (M)");
 
 						String input = scn.nextLine().trim().toUpperCase();
+
 						if (input.equals("P")) {
-							if (currentPage > 1)
+							if (currentPage > 1) {
 								currentPage--;
-							else
+							} else {
 								System.out.println("-----------------------------------------------------");
-							System.out.println("이전 페이지가 없습니다.");
+								System.out.println("이전 페이지가 없습니다.");
+							}
 							continue;
 						} else if (input.equals("N")) {
-							if (currentPage < totalPages)
+							if (currentPage < totalPages) {
 								currentPage++;
-							else
+							} else {
 								System.out.println("-----------------------------------------------------");
-							System.out.println("다음 페이지가 없습니다.");
+								System.out.println("다음 페이지가 없습니다.");
+							}
 							continue;
 						} else if (input.equals("M")) {
 							isMainMenu = true;
@@ -160,6 +170,11 @@ public class MainExe {
 									int totalPosts = boards.size();
 									int totalPages = (int) Math.ceil((double) totalPosts / pageSize); // 올림해서 정수로
 
+									if (currentPage > totalPages)
+										currentPage = totalPages;
+									if (currentPage < 1)
+										currentPage = 1;
+
 									int start = (currentPage - 1) * pageSize; // 현재 페이지에서 보여줄 게시글의 시작 인덱스 번호
 									int end = Math.min(start + pageSize, totalPosts);// 현재페이지에서 보여줄 게시글의 마지막 인덱스 번호
 
@@ -238,6 +253,12 @@ public class MainExe {
 								}
 								break;
 							case 2: // 게시글 등록
+								System.out.println("-----------------------------------------------------");
+								if (!"admin".equals(loggedInUserId)) {
+									System.out.println("관리자만 접근할 수 있는 기능입니다.");
+									break;
+								}
+
 								System.out.println("게시물 제목을 입력해주세요>> ");
 								String title = scn.nextLine();
 								System.out.println("게시물 내용을 입력해주세요>> ");
@@ -257,6 +278,12 @@ public class MainExe {
 								}
 								break;
 							case 3: // 게시글 수정
+								System.out.println("-----------------------------------------------------");
+								if (!"admin".equals(loggedInUserId)) {
+									System.out.println("관리자만 접근할 수 있는 기능입니다.");
+									break;
+								}
+
 								System.out.println("수정할 게시물의 번호를 입력해주세요>> ");
 								int num = Integer.parseInt(scn.nextLine());
 								System.out.println("수정할 게시물 제목을 입력해주세요>> ");
@@ -280,6 +307,12 @@ public class MainExe {
 								isMainMenu = true;
 								break;
 							case 4: // 게시글 삭제
+								System.out.println("-----------------------------------------------------");
+								if (!"admin".equals(loggedInUserId)) {
+									System.out.println("관리자만 접근할 수 있는 기능입니다.");
+									break;
+								}
+
 								int boardId = 0;
 								while (true) {
 									System.out.println("삭제할 게시물의 번호를 입력해주세요>> ");
@@ -318,10 +351,11 @@ public class MainExe {
 				case 3: // 나무 등록
 					while (true) {
 						System.out.println("-----------------------------------------------------");
-						System.out.println("나무등록은 관리자만 가능합니다.>> ");
+						if (!"admin".equals(loggedInUserId)) {
+							System.out.println("관리자만 접근할 수 있는 기능입니다.");
+							break;
+						}
 
-						System.out.println("나무의 id를 입력해주세요>> ");
-						int id = Integer.parseInt(scn.nextLine());
 						System.out.println("나무 명을 입력해주세요>> ");
 						String name = scn.nextLine();
 						System.out.println("나무 가격을 입력해주세요>> ");
@@ -329,7 +363,7 @@ public class MainExe {
 						System.out.println("나무에 대한 설명을 입력해주세요>> ");
 						String description = scn.nextLine();
 
-						Tree treeR = new Tree(id, name, price, description);
+						Tree treeR = new Tree(name, price, description);
 						if (treeDao.add(treeR)) {
 							System.out.println("등록이 완료되었습니다.");
 						} else {
@@ -341,7 +375,10 @@ public class MainExe {
 				case 4: // 나무 수정
 					while (true) {
 						System.out.println("-----------------------------------------------------");
-						System.out.println("나무 수정은 관리자만 가능합니다.>> ");
+						if (!"admin".equals(loggedInUserId)) {
+							System.out.println("관리자만 접근할 수 있는 기능입니다.");
+							break;
+						}
 
 						System.out.println("수정할 나무의 id를 입력해주세요>> ");
 						int id = Integer.parseInt(scn.nextLine());
@@ -369,7 +406,11 @@ public class MainExe {
 				case 5: // 나무 삭제
 					while (true) {
 						System.out.println("-----------------------------------------------------");
-						System.out.println("나무 삭제는 관리자만 가능합니다.>> ");
+						if (!"admin".equals(loggedInUserId)) {
+							System.out.println("관리자만 접근할 수 있는 기능입니다.");
+							break;
+						}
+
 						int id = 0;
 						while (true) {
 							System.out.println("삭제할 나무의 id를 입력해주세요>> ");
@@ -417,6 +458,7 @@ public class MainExe {
 					System.out.println("-----------------------------------------------------");
 
 					if (userDao.login(user_id, user_pw)) {
+						loggedInUserId = user_id;
 						if (user_id.equals("admin") && user_pw.equals("1234")) {
 							System.out.println(user_id + "(관리자)님 환영합니다.");
 						} else {
