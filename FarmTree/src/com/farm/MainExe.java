@@ -22,14 +22,26 @@ public class MainExe {
 		while (true) {
 			if (isMainMenu) { // 주 메뉴일 때만 메뉴를 출력
 				System.out.println("-----------------------------------------------------");
-				System.out.println("[1] 나무 목록 보기");
-				System.out.println("[2] 게시판");
-				System.out.println("[3] 나무 등록하기");
-				System.out.println("[4] 나무 수정하기");
-				System.out.println("[5] 나무 삭제하기");
-				System.out.println("[6] 회원가입");
-				System.out.println("[7] 로그인");
-				System.out.println("[9] 종료");
+				if(loggedInUserId == null) {
+					System.out.println("[1] 나무 목록 보기");
+					System.out.println("[2] 게시판");
+					System.out.println("[3] 나무 등록하기");
+					System.out.println("[4] 나무 수정하기");
+					System.out.println("[5] 나무 삭제하기");
+					System.out.println("[6] 회원가입");
+					System.out.println("[7] 로그인");
+					System.out.println("[9] 종료");
+				}else {
+					System.out.println("[1] 나무 목록 보기");
+					System.out.println("[2] 게시판");
+					System.out.println("[3] 나무 등록하기");
+					System.out.println("[4] 나무 수정하기");
+					System.out.println("[5] 나무 삭제하기");
+					System.out.println("[6] 회원가입");
+					System.out.println("[8] 로그아웃");
+					System.out.println("[9] 종료");
+				}
+				
 				System.out.println("-----------------------------------------------------");
 				System.out.print("메뉴를 선택해주세요>> ");
 
@@ -469,6 +481,11 @@ public class MainExe {
 						System.out.println("로그인에 실패했습니다. 아이디, 비밀번호를 다시 입력해주세요.");
 						System.out.println("-----------------------------------------------------");
 					}
+					break;
+				case 8://로그아웃
+					loggedInUserId = null;
+					System.out.println("-----------------------------------------------------");
+					System.out.println("로그아웃되었습니다.");
 					break;
 				case 9: // 종료
 					System.out.println("프로그램을 종료합니다. 이용해주셔서 감사합니다!!!");
