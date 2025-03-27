@@ -8,7 +8,7 @@ public class Board {
 	private String author;
 	private String post_date;
 	private int view_count;
-	
+	//
 	
 
 	// 생성자
