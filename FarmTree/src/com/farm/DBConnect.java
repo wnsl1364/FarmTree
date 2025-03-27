@@ -8,7 +8,7 @@ public class DBConnect {
 	// Connection 생성
 
 	// 1. 데이터베이스 연결을 위한 기본 정보 (Oracle 기준)
-	private static final String url = "jdbc:oracle:thin:@localhost:1521:xe"; // 오라클 DB 접속 URL
+	private static final String url = "jdbc:oracle:thin:@192.168.0.40:1521:xe"; // 오라클 DB 접속 URL
 	private static final String userId = "scott"; // 데이터베이스 사용자 계정
 	private static final String userPw = "tiger"; // 데이터베이스 사용자 비밀번호
 
